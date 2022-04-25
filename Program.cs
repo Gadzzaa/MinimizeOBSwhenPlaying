@@ -24,7 +24,10 @@ namespace MinimizeAppSomething
                 _sreader = StructuredOsuMemoryReader.Instance.GetInstanceForWindowTitleHint(args.FirstOrDefault());
                 _sreader.WithTimes = true;
 
-                while(Process.GetProcessesByName("osu!").Length == 0 && !_sreader.CanRead || Process.GetProcessesByName("obs64").Length == 0) continue;
+                while(Process.GetProcessesByName("osu!").Length == 0 && !_sreader.CanRead || Process.GetProcessesByName("obs64").Length == 0) {
+                    Console.WriteLine("osu! or obs not found");
+                    continue;
+                }
 
                 _sreader.TryRead(BaseAddresses.GeneralData);
 
