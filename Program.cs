@@ -1,39 +1,52 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 using OsuMemoryDataProvider;
 using OsuMemoryDataProvider.OsuMemoryModels;
-using OsuMemoryDataProvider.OsuMemoryModels.Direct;
-using Formatting = System.Xml.Formatting;
 
 namespace MinimizeAppSomething
 {
-    static class Program
+    internal static class Program
     {        
-        private int _readDelay = 33;
+        private static int _readDelay = 33;
         
-        private CancellationTokenSource cts = new CancellationTokenSource();
-        private StructuredOsuMemoryReader _sreader;
+        private static readonly CancellationTokenSource Cts = new CancellationTokenSource();
+        private static StructuredOsuMemoryReader _sreader;
+        private static readonly OsuBaseAddresses BaseAddresses = new OsuBaseAddresses();
+        private static OsuMemoryStatus _lastStatus;
+
+        private enum ShowWindowEnum
+        {
+            Hide = 0,
+            ShowNormal = 1, ShowMinimized = 2, ShowMaximized = 3,
+            Maximize = 3, ShowNormalNoActivate = 4, Show = 5,
+            Minimize = 6, ShowMinNoActivate = 7, ShowNoActivate = 8,
+            Restore = 9, ShowDefault = 10, ForceMinimized = 11
+        };
+
+        [System.Runtime.InteropServices.DllImport("user32.dll")] private static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
+
+        [DllImport("user32.dll")] public static extern int SetForegroundWindow(IntPtr hwnd);
 
         [STAThread]
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
-            _sreader = StructuredOsuMemoryReader.Instance.GetInstanceForWindowTitleHint((string) args.FirstOrDefault());
-            _sreader.InvalidRead += SreaderOnInvalidRead;
+            _sreader = StructuredOsuMemoryReader.Instance.GetInstanceForWindowTitleHint(args.FirstOrDefault());
+            _sreader.InvalidRead += SreaderOnInvalidRead; 
+            await OsuData();                    
         }
 
-        public async void OsuData()
+        private static async Task OsuData()
         {
             await Task.Run(async () =>
             {
                 _sreader.WithTimes = true;
-                var baseAddresses = new OsuBaseAddresses();
                 while (true)
                 {
-                    if (cts.IsCancellationRequested)
+                    if (Cts.IsCancellationRequested)
                         return;
 
                     if (!_sreader.CanRead)
@@ -42,12 +55,37 @@ namespace MinimizeAppSomething
                         await Task.Delay(_readDelay);
                         continue;
                     }
-                    _sreader.TryRead(baseAddresses.GeneralData);
-                    Console.WriteLine("CURRENT STATUS: " + baseAddresses.GeneralData.OsuStatus);
+                    _sreader.TryRead(BaseAddresses.GeneralData);
+                    if (BaseAddresses.GeneralData.OsuStatus == OsuMemoryStatus.Playing && _lastStatus != OsuMemoryStatus.Playing)
+                        MinimizeProgram();
+                    else if(BaseAddresses.GeneralData.OsuStatus != OsuMemoryStatus.Playing && _lastStatus == OsuMemoryStatus.Playing)
+                        MaximizeProgram();
+                    _lastStatus = BaseAddresses.GeneralData.OsuStatus;
                 }
-            }, cts.Token);
+            }, Cts.Token);
         }
-        private void SreaderOnInvalidRead(object sender, (object readObject, string propPath) e)
+
+        private static void MinimizeProgram()
+        {
+            var p = System.Diagnostics.Process.GetProcessesByName("obs64").FirstOrDefault();
+            var p2 = Process.GetProcessesByName("osu!").FirstOrDefault();
+            if(p!=null)
+            {
+                ShowWindow(p.MainWindowHandle, (int)ShowWindowEnum.ShowMinimized);
+            }
+        }
+
+        private static void MaximizeProgram()
+        {
+            var p = System.Diagnostics.Process.GetProcessesByName("obs64").FirstOrDefault();
+            var p2 = Process.GetProcessesByName("osu!").FirstOrDefault();
+
+            if(p!=null)
+            {
+                ShowWindow(p.MainWindowHandle, (int)ShowWindowEnum.ShowNormalNoActivate);
+            }
+        }
+        private static void SreaderOnInvalidRead(object sender, (object readObject, string propPath) e)
         {
             try
             {
@@ -58,29 +96,5 @@ namespace MinimizeAppSomething
 
             }        
         }
-        private T ReadProperty<T>(object readObj, string propName, T defaultValue = default) where T : struct
-        {
-            if (_sreader.TryReadProperty(readObj, propName, out var readResult))
-                return (T)readResult;
-
-            return defaultValue;
-        }
-        private T ReadClassProperty<T>(object readObj, string propName, T defaultValue = default) where T : class
-        {
-            if (_sreader.TryReadProperty(readObj, propName, out var readResult))
-                return (T)readResult;
-
-            return defaultValue;
-        }
-        private int ReadInt(object readObj, string propName)
-            => ReadProperty<int>(readObj, propName, -5);
-        private short ReadShort(object readObj, string propName)
-            => ReadProperty<short>(readObj, propName, -5);
-
-        private float ReadFloat(object readObj, string propName)
-            => ReadProperty<float>(readObj, propName, -5f);
-
-        private string ReadString(object readObj, string propName)
-            => ReadClassProperty<string>(readObj, propName, "INVALID READ");
     }
 }
