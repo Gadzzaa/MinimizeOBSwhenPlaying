@@ -11,7 +11,7 @@ namespace MinimizeAppSomething
     {
         private static StructuredOsuMemoryReader _sreader;
         private static readonly OsuBaseAddresses BaseAddresses = new OsuBaseAddresses();
-        private static Boolean playing = false;
+        private static OsuMemoryStatus _lastStatus;
 
         [DllImport("user32.dll")]
         private static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
@@ -19,19 +19,36 @@ namespace MinimizeAppSomething
         [STAThread]
         private static void Main(string[] args)
         {
-            Console.WriteLine("Open OBS and osu! and keep this running to automatically hide OBS while playing catJAM");
             while (true) {
                 _sreader = StructuredOsuMemoryReader.Instance.GetInstanceForWindowTitleHint(args.FirstOrDefault());
                 _sreader.WithTimes = true;
-
-                while(Process.GetProcessesByName("osu!").Length == 0 && !_sreader.CanRead || Process.GetProcessesByName("obs64").Length == 0) continue;
-
                 _sreader.TryRead(BaseAddresses.GeneralData);
-
-                if (BaseAddresses.GeneralData.OsuStatus == OsuMemoryStatus.Playing && playing) ShowWindow(Process.GetProcessesByName("obs64")[0].MainWindowHandle, 2);
-                else if (BaseAddresses.GeneralData.OsuStatus != OsuMemoryStatus.Playing && !playing) ShowWindow(Process.GetProcessesByName("obs64")[0].MainWindowHandle, 4);
-
-                playing = !playing;
+                if (BaseAddresses.GeneralData.OsuStatus == OsuMemoryStatus.Playing && _lastStatus != OsuMemoryStatus.Playing)
+                {
+                    var p = Process.GetProcessesByName("obs64").FirstOrDefault();
+                    if (p != null) ShowWindow(p.MainWindowHandle, 2);
+                }
+                else if (BaseAddresses.GeneralData.OsuStatus != OsuMemoryStatus.Playing && _lastStatus == OsuMemoryStatus.Playing)
+                {
+                    var p = Process.GetProcessesByName("obs64").FirstOrDefault();
+                    if (p != null) ShowWindow(p.MainWindowHandle, 4);
+                }
+                _lastStatus = BaseAddresses.GeneralData.OsuStatus;
+                /*
+                 Hide = 0,
+                ShowNormal = 1,
+                ShowMinimized = 2,
+                ShowMaximized = 3,
+                Maximize = 3,
+                ShowNormalNoActivate = 4,
+                Show = 5,
+                Minimize = 6,
+                ShowMinNoActivate = 7,
+                ShowNoActivate = 8,
+                Restore = 9,
+                ShowDefault = 10,
+                ForceMinimized = 11
+                 */
             }
         }
     }
