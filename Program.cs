@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Threading;
 using OsuMemoryDataProvider;
 using OsuMemoryDataProvider.OsuMemoryModels;
 
@@ -26,14 +27,19 @@ namespace MinimizeAppSomething
                 if (BaseAddresses.GeneralData.OsuStatus == OsuMemoryStatus.Playing && _lastStatus != OsuMemoryStatus.Playing)
                 {
                     var p = Process.GetProcessesByName("obs64").FirstOrDefault();
+                    var p2 = Process.GetProcessesByName("obs32").FirstOrDefault();
                     if (p != null) ShowWindow(p.MainWindowHandle, 2);
+                    if (p2 != null) ShowWindow(p.MainWindowHandle, 2);
                 }
                 else if (BaseAddresses.GeneralData.OsuStatus != OsuMemoryStatus.Playing && _lastStatus == OsuMemoryStatus.Playing)
                 {
                     var p = Process.GetProcessesByName("obs64").FirstOrDefault();
+                    var p2 = Process.GetProcessesByName("obs32").FirstOrDefault();
                     if (p != null) ShowWindow(p.MainWindowHandle, 4);
+                    if (p2 != null) ShowWindow(p.MainWindowHandle, 4);
                 }
                 _lastStatus = BaseAddresses.GeneralData.OsuStatus;
+                Thread.Sleep(500);
                 /*
                  Hide = 0,
                 ShowNormal = 1,
