@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Threading;
 
 namespace OsuHG
@@ -15,11 +16,11 @@ namespace OsuHG
         };
         public static string[] AfterF8 =
         {
-            "Use minimizing feature?: ", "<AddSetting>",
-            "Program executable name('without .exe'): ", "<AddSetting>",
-            "Use gamma feature?: ", "<AddSetting>",
-            "Lowest usable gamma: ", "<AddSetting>",
-            "Highest usable gamma: ", "<AddSetting>"
+            "Use minimizing feature?: ", "minFeature",
+            "Program executable name('without .exe'): ", "execName",
+            "Use gamma feature?: ", "gammaFeature",
+            "Lowest usable gamma: ", "lowGamma",
+            "Highest usable gamma: ", "highGamma"
         };
         public static void FirstTimeProg()
         {
@@ -33,8 +34,13 @@ namespace OsuHG
             int z = 0;
             while (!(Console.KeyAvailable && Console.ReadKey(true).Key == ConsoleKey.F8))
             {
-                Write.WriteString(AfterF8[z]);
-                if(z%2!=0) Console.WriteLine();
+                if (z % 2 != 0)
+                {
+                    Console.Write(Settings1.Default[AfterF8[z]].ToString());
+                    Console.WriteLine();
+                }
+                else 
+                    Write.WriteString(AfterF8[z]);
                 z++;
                 if (z == AfterF8.Length - 1)
                 {
