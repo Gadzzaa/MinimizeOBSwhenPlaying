@@ -5,14 +5,17 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using OsuMemoryDataProvider;
 using OsuMemoryDataProvider.OsuMemoryModels;
+using OsuMemoryDataProvider.OsuMemoryModels.Direct;
 
 namespace MinimizeAppSomething
 {
     internal static class Program
     {
         private static StructuredOsuMemoryReader _sreader;
-        private static readonly OsuBaseAddresses BaseAddresses = new OsuBaseAddresses();
-        private static OsuMemoryStatus _lastStatus;
+
+        private static readonly GeneralData GeneralData = new OsuBaseAddresses().GeneralData;
+
+        private static Process obs32, obs64, osu;
 
         [DllImport("user32.dll")]
         private static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
@@ -20,42 +23,40 @@ namespace MinimizeAppSomething
         [STAThread]
         private static void Main(string[] args)
         {
-            while (true) {
-                _sreader = StructuredOsuMemoryReader.Instance.GetInstanceForWindowTitleHint(args.FirstOrDefault());
-                _sreader.WithTimes = true;
-                _sreader.TryRead(BaseAddresses.GeneralData);
-                if (BaseAddresses.GeneralData.OsuStatus == OsuMemoryStatus.Playing && _lastStatus != OsuMemoryStatus.Playing)
-                {
-                    var p = Process.GetProcessesByName("obs64").FirstOrDefault();
-                    var p2 = Process.GetProcessesByName("obs32").FirstOrDefault();
-                    if (p != null) ShowWindow(p.MainWindowHandle, 2);
-                    if (p2 != null) ShowWindow(p.MainWindowHandle, 2);
-                }
-                else if (BaseAddresses.GeneralData.OsuStatus != OsuMemoryStatus.Playing && _lastStatus == OsuMemoryStatus.Playing)
-                {
-                    var p = Process.GetProcessesByName("obs64").FirstOrDefault();
-                    var p2 = Process.GetProcessesByName("obs32").FirstOrDefault();
-                    if (p != null) ShowWindow(p.MainWindowHandle, 4);
-                    if (p2 != null) ShowWindow(p.MainWindowHandle, 4);
-                }
-                _lastStatus = BaseAddresses.GeneralData.OsuStatus;
+            while (true)
+            {
+                // timeout => Helps with CPU Usage
                 Thread.Sleep(500);
-                /*
-                 Hide = 0,
-                ShowNormal = 1,
-                ShowMinimized = 2,
-                ShowMaximized = 3,
-                Maximize = 3,
-                ShowNormalNoActivate = 4,
-                Show = 5,
-                Minimize = 6,
-                ShowMinNoActivate = 7,
-                ShowNoActivate = 8,
-                Restore = 9,
-                ShowDefault = 10,
-                ForceMinimized = 11
-                 */
+
+                // read Processes
+                //TODO : If not running => await run
+                obs32 = Process.GetProcessesByName("obs32").FirstOrDefault();
+                obs64 = Process.GetProcessesByName("obs64").FirstOrDefault();
+                osu = Process.GetProcessesByName("osu!").FirstOrDefault();
+
+                // if osu is not running => return
+                if (osu == null) return;
+
+                // set srReader
+                _sreader = StructuredOsuMemoryReader.Instance.GetInstanceForWindowTitleHint(args.FirstOrDefault());
+                _sreader.TryRead(GeneralData);
+
+                //Execute program
+                if (obs32 != null) Ver32bit();
+                else Ver64bit();
             }
+        }
+
+        private static void Ver32bit()
+        {
+            if (GeneralData.OsuStatus != OsuMemoryStatus.Playing) ShowWindow(obs32.MainWindowHandle, 4);
+            else ShowWindow(obs32.MainWindowHandle, 2);
+        }
+
+        private static void Ver64bit()
+        {
+            if (GeneralData.OsuStatus != OsuMemoryStatus.Playing) ShowWindow(obs64.MainWindowHandle, 4);
+            else ShowWindow(obs64.MainWindowHandle, 2);
         }
     }
 }
