@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MinimizeAppSomething", "MinimizeAppSomething.csproj", "{E4DE3A8D-DFAE-48C7-973B-54178955BEC2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OsuHG", "OsuHG.csproj", "{E4DE3A8D-DFAE-48C7-973B-54178955BEC2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
