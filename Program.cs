@@ -7,7 +7,7 @@ using OsuMemoryDataProvider;
 using OsuMemoryDataProvider.OsuMemoryModels;
 using OsuMemoryDataProvider.OsuMemoryModels.Direct;
 
-namespace MinimizeAppSomething
+namespace OsuHG
 {
     internal static class Program
     {
@@ -25,23 +25,28 @@ namespace MinimizeAppSomething
         {
             while (true)
             {
-                // timeout => Helps with CPU Usage
+                // Timeout => Helps with CPU Usage
                 Thread.Sleep(500);
 
-                // read Processes
-                //TODO : If not running => await run
-                obs32 = Process.GetProcessesByName("obs32").FirstOrDefault();
-                obs64 = Process.GetProcessesByName("obs64").FirstOrDefault();
+                // Await osu!
+                FindPrograms.FindEXE("osu!", "osu!");
+                Console.Clear();
                 osu = Process.GetProcessesByName("osu!").FirstOrDefault();
 
-                // if osu is not running => return
-                if (osu == null) return;
+                // Await OBS
+                FindPrograms.FindProgram64or32("OBS", "obs64", "obs32");
+                Console.Clear();
+                obs32 = Process.GetProcessesByName("obs32").FirstOrDefault();
+                obs64 = Process.GetProcessesByName("obs64").FirstOrDefault();
+                
+                // Cooldown to load every program
+                Thread.Sleep(2500);
 
-                // set srReader
+                // Set srReader
                 _sreader = StructuredOsuMemoryReader.Instance.GetInstanceForWindowTitleHint(args.FirstOrDefault());
                 _sreader.TryRead(GeneralData);
 
-                //Execute program
+                // Execute program
                 if (obs32 != null) Ver32bit();
                 else Ver64bit();
             }
