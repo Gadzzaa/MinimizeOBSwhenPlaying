@@ -22,7 +22,7 @@ namespace OsuHG
         {
             // Await OBS
             FindPrograms.FindProgram64or32("OBS", "obs64", "obs32");
-            Console.Clear();
+            ConsoleClearV2.Clear();
             obs32 = Process.GetProcessesByName("obs32").FirstOrDefault();
             obs64 = Process.GetProcessesByName("obs64").FirstOrDefault();
             

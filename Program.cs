@@ -22,18 +22,21 @@ namespace OsuHG
         {
             while (true)
             {
+                ConsoleClearV2.Clear();
                 FirstTime.FirstTimeProg();
                 // Timeout => Helps with CPU Usage
                 Thread.Sleep(500);
 
                 // Await osu!
                 FindPrograms.FindEXE("osu!", "osu!");
-                Console.Clear();
+                ConsoleClearV2.Clear();
                 osu = Process.GetProcessesByName("osu!").FirstOrDefault();
 
                 // Set srReader
                 _sreader = StructuredOsuMemoryReader.Instance.GetInstanceForWindowTitleHint(args.FirstOrDefault());
                 _sreader.TryRead(GeneralData);
+                
+                
                 
             }
         }

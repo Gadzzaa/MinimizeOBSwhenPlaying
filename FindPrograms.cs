@@ -24,7 +24,7 @@ namespace OsuHG
                 Console.Write(".");
                 y = Process.GetProcessesByName(process).FirstOrDefault();
                 Thread.Sleep(500);
-                Console.Clear();
+                ConsoleClearV2.Clear();
             }
         }
 
@@ -50,7 +50,7 @@ namespace OsuHG
                 y = Process.GetProcessesByName(process64).FirstOrDefault();
                 z = Process.GetProcessesByName(process32).FirstOrDefault();
                 Thread.Sleep(500);
-                Console.Clear();
+                ConsoleClearV2.Clear();
             }
         }
     }
