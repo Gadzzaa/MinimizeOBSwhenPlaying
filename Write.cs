@@ -7,10 +7,10 @@ namespace OsuHG
     {
         public static void WriteString(string x)
         {
-            for (int i = 0; i < x.Length; i++)
+            for (var i = 0; i < x.Length; i++)
             {
                 Console.Write(x[i]);
-                Thread.Sleep(30);
+                Thread.Sleep(10);
             }
         }
     }

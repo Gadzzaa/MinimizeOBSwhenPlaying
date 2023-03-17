@@ -35,21 +35,14 @@ namespace OsuHG
             while (y == null && z == null)
             {
                 Console.Write("Awaiting " + x);
-                y = Process.GetProcessesByName(process64).FirstOrDefault();
-                z = Process.GetProcessesByName(process32).FirstOrDefault();
-                Thread.Sleep(500);
-                Console.Write(".");
-                y = Process.GetProcessesByName(process64).FirstOrDefault();
-                z = Process.GetProcessesByName(process32).FirstOrDefault();
-                Thread.Sleep(500);
-                Console.Write(".");
-                y = Process.GetProcessesByName(process64).FirstOrDefault();
-                z = Process.GetProcessesByName(process32).FirstOrDefault();
-                Thread.Sleep(500);
-                Console.Write(".");
-                y = Process.GetProcessesByName(process64).FirstOrDefault();
-                z = Process.GetProcessesByName(process32).FirstOrDefault();
-                Thread.Sleep(500);
+                for (var i = 0; i < 3; i++)
+                {
+                    Console.Write(".");
+                    y = Process.GetProcessesByName(process64).FirstOrDefault();
+                    z = Process.GetProcessesByName(process32).FirstOrDefault();
+                    Thread.Sleep(500);
+                }
+
                 ConsoleClearV2.Clear();
             }
         }
