@@ -9,23 +9,11 @@ namespace OsuHG
     {
         public static void FindEXE(string x, string process)
         {
-            var y = Process.GetProcessesByName(process).FirstOrDefault();
-            while (y == null)
-            {
+            do {
                 Console.Write("Awaiting " + x);
                 y = Process.GetProcessesByName(process).FirstOrDefault();
                 Thread.Sleep(500);
-                Console.Write(".");
-                y = Process.GetProcessesByName(process).FirstOrDefault();
-                Thread.Sleep(500);
-                Console.Write(".");
-                y = Process.GetProcessesByName(process).FirstOrDefault();
-                Thread.Sleep(500);
-                Console.Write(".");
-                y = Process.GetProcessesByName(process).FirstOrDefault();
-                Thread.Sleep(500);
-                ConsoleClearV2.Clear();
-            }
+            } while(y == null);
         }
 
         public static void FindProgram64or32(string x, string process64, string process32)
