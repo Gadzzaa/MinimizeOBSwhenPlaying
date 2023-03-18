@@ -7,6 +7,7 @@ namespace OsuHG
 {
     public static class FindPrograms
     {
+        private static Process y,z;
         public static void FindEXE(string x, string process)
         {
             do {
@@ -18,10 +19,8 @@ namespace OsuHG
 
         public static void FindProgram64or32(string x, string process64, string process32)
         {
-            var y = Process.GetProcessesByName(process64).FirstOrDefault();
-            var z = Process.GetProcessesByName(process32).FirstOrDefault();
-            while (y == null && z == null)
-            {
+
+            do {
                 Console.Write("Awaiting " + x);
                 for (var i = 0; i < 3; i++)
                 {
@@ -32,7 +31,7 @@ namespace OsuHG
                 }
 
                 ConsoleClearV2.Clear();
-            }
+            } while (y == null && z == null);
         }
     }
 }
