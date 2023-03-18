@@ -16,7 +16,7 @@ namespace OsuHG
             "5. Highest usable gamma (max. 2): ", "highGamma"
         };
 
-        public static async Task Menu()
+        public static void Menu()
         {
             for (var i = 0; i < Settings.Length; i++)
                 if (i % 2 != 0)
@@ -30,38 +30,41 @@ namespace OsuHG
                 }
 
             Console.WriteLine();
-            Write.WriteString("Type 0 to confirm settings.");
+            Write.WriteString("Type '6' for main menu.");
             Console.WriteLine();
             Console.WriteLine();
             Console.WriteLine();
-            SelectNumber(x);
-            if (x == -1) Settings1.Default.Save();
-            if (x == -2) OutOfRange();
-            Option();
-        }
-
-        public static void SelectNumber(int x)
-        {
             Write.WriteString("Select which setting you wish to change: ");
-            x = -2;
-            for (var i = 0; i <= 5; i++)
+            x = Int32.Parse(Console.ReadLine());
+            int y = 2 * (x - 1);
+            ConsoleClearV2.Clear();
+            Write.WriteString(Settings[y]);
+            switch (y) 
             {
-                if (int.Parse(Console.ReadLine()) != i) return;
-                x = i - 1;
-                break;
-            }
-        }
+                case 0:
+                    Settings1.Default.minFeature = TrueFalse(Console.ReadLine());
+                    break;
+                case 2:
+                    Settings1.Default.execName = Console.ReadLine();
+                    break;
+                case 4:
+                    Settings1.Default.gammaFeature = TrueFalse(Console.ReadLine());
+                    break;
+                case 6:
+                    Settings1.Default.lowGamma = int.Parse(Console.ReadLine());
+                    break;
+                case 8:
+                    Settings1.Default.highGamma = int.Parse(Console.ReadLine());
+                    break;
+                case 10:
+                    break;
+                default:
+                    OutOfRange();
+                    break;
 
-        public static void Option()
-        {
+            }
             ConsoleClearV2.Clear();
-            Write.WriteString(Settings[2 * x]);
-            if (2 * x == 0) Settings1.Default.minFeature = TrueFalse(Console.ReadLine());
-            if (2 * x == 2) Settings1.Default.execName = Console.ReadLine();
-            if (2 * x == 4) Settings1.Default.gammaFeature = TrueFalse(Console.ReadLine());
-            if (2 * x == 6) Settings1.Default.lowGamma = int.Parse(Console.ReadLine());
-            if (2 * x == 8) Settings1.Default.highGamma = int.Parse(Console.ReadLine());
-            ConsoleClearV2.Clear();
+            Settings1.Default.Save();
         }
 
         public static void OutOfRange()

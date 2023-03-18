@@ -10,17 +10,26 @@ namespace OsuHG
         private static Process y,z;
         public static void FindEXE(string x, string process)
         {
-            do {
+            while(y == null)
+            {
+                Console.WriteLine("Settings unavailable");
                 Console.Write("Awaiting " + x);
-                y = Process.GetProcessesByName(process).FirstOrDefault();
-                Thread.Sleep(500);
-            } while(y == null);
+                for (var i = 0; i < 3; i++)
+                {
+                    Console.Write(".");
+                    y = Process.GetProcessesByName(process).FirstOrDefault();
+                    Thread.Sleep(500);
+                }
+                ConsoleClearV2.Clear();
+            }
         }
 
         public static void FindProgram64or32(string x, string process64, string process32)
         {
 
-            do {
+            while (y == null && z == null) 
+            {
+                Console.WriteLine("Settings unavailable");
                 Console.Write("Awaiting " + x);
                 for (var i = 0; i < 3; i++)
                 {
@@ -29,9 +38,8 @@ namespace OsuHG
                     z = Process.GetProcessesByName(process32).FirstOrDefault();
                     Thread.Sleep(500);
                 }
-
                 ConsoleClearV2.Clear();
-            } while (y == null && z == null);
+            }
         }
     }
 }

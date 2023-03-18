@@ -32,7 +32,7 @@ namespace OsuHG
             if (obs32 != null) Ver32bit();
             else Ver64bit();
         }
-
+        // TODO: LAST STATUS
         private static void Ver32bit()
         {
             if (GeneralData.OsuStatus != OsuMemoryStatus.Playing) ShowWindow(obs32.MainWindowHandle, 4);
