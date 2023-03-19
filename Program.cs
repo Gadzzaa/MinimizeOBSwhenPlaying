@@ -40,7 +40,6 @@ namespace OsuHG
                     if (Settings1.Default.minFeature)
                         MinimizeProgram.MinimProgram();
 
-
                     // Set srReader
                     _sreader = StructuredOsuMemoryReader.Instance.GetInstanceForWindowTitleHint(args.FirstOrDefault());
                     _sreader.TryRead(GeneralData);

@@ -28,9 +28,6 @@ namespace OsuHG
                 exec = FindPrograms.FindEXE("Program Executable (" + Settings1.Default.execName + ")", Settings1.Default.execName);
             ConsoleClearV2.Clear();
 
-            // Cooldown to load program
-            Thread.Sleep(2500);
-
             // Execute program
             if (GeneralData.OsuStatus != OsuMemoryStatus.Playing && _lastStatus == OsuMemoryStatus.Playing) ShowWindow(exec.MainWindowHandle, 4);
             else ShowWindow(exec.MainWindowHandle, 2);
