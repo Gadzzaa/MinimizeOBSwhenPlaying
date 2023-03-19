@@ -29,10 +29,12 @@ namespace OsuHG
                     // Timeout => Helps with CPU Usage
                     Thread.Sleep(500);
                     
-                    // Await osu!
-                    FindPrograms.FindEXE("osu!", "osu!");
-                    ConsoleClearV2.Clear();
                     osu = Process.GetProcessesByName("osu!").FirstOrDefault();
+
+                    // Await osu!
+                    if(osu == null)
+                        osu = FindPrograms.FindEXE("osu!", "osu!");
+                    ConsoleClearV2.Clear();
 
                     //Minimize program
                     if (Settings1.Default.minFeature)

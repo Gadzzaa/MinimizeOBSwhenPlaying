@@ -8,7 +8,7 @@ namespace OsuHG
     public static class FindPrograms
     {
         private static Process y,z;
-        public static void FindEXE(string x, string process)
+        public static Process FindEXE(string x, string process)
         {
             while(y == null)
             {
@@ -22,8 +22,11 @@ namespace OsuHG
                 }
                 ConsoleClearV2.Clear();
             }
+
+            return y;
         }
 
+        //TODO: TO BE IMPLEMENTED
         public static void FindProgram64or32(string x, string process64, string process32)
         {
 
