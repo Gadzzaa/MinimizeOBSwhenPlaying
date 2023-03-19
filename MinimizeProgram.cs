@@ -12,7 +12,6 @@ namespace OsuHG
     {
         private static readonly GeneralData GeneralData = Program.GeneralData;
 
-        private static OsuMemoryStatus _lastStatus;
 
         private static Process obs32,obs64;
 
@@ -31,19 +30,17 @@ namespace OsuHG
             // Execute program
             if (obs32 != null) Ver32bit();
             else Ver64bit();
-
-            _lastStatus = GeneralData.OsuStatus;
         }
         private static void Ver32bit()
         {
-            if (GeneralData.OsuStatus != OsuMemoryStatus.Playing && _lastStatus == OsuMemoryStatus.Playing) ShowWindow(obs32.MainWindowHandle, 4);
-            else ShowWindow(obs32.MainWindowHandle, 2);
+            if (GeneralData.OsuStatus != OsuMemoryStatus.Playing && Program._lastStatus == OsuMemoryStatus.Playing) ShowWindow(obs32.MainWindowHandle, 4);
+            if (GeneralData.OsuStatus == OsuMemoryStatus.Playing && Program._lastStatus != OsuMemoryStatus.Playing) ShowWindow(obs32.MainWindowHandle, 2);
         }
 
         private static void Ver64bit()
         {
-            if (GeneralData.OsuStatus != OsuMemoryStatus.Playing && _lastStatus == OsuMemoryStatus.Playing) ShowWindow(obs64.MainWindowHandle, 4);
-            else ShowWindow(obs64.MainWindowHandle, 2);
+            if (GeneralData.OsuStatus != OsuMemoryStatus.Playing && Program._lastStatus == OsuMemoryStatus.Playing) ShowWindow(obs64.MainWindowHandle, 4);
+            if (GeneralData.OsuStatus == OsuMemoryStatus.Playing && Program._lastStatus != OsuMemoryStatus.Playing) ShowWindow(obs64.MainWindowHandle, 2);
         }
     }
 }

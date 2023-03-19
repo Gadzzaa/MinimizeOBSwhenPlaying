@@ -14,11 +14,13 @@ namespace OsuHG
         private static StructuredOsuMemoryReader _sreader;
 
         public static readonly GeneralData GeneralData = new OsuBaseAddresses().GeneralData;
+        
+        public static OsuMemoryStatus _lastStatus;
 
         private static Process osu;
 
         private static bool Clear = false;
-        
+
         [STAThread]
         private static void Main(string[] args)
         {
@@ -45,6 +47,7 @@ namespace OsuHG
                     if (Settings1.Default.minFeature)
                     {
                         MinimizeProgram.MinimProgram();
+                        _lastStatus = GeneralData.OsuStatus;
                         Clear = false;
                     }
 
