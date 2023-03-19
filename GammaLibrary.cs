@@ -3,17 +3,17 @@ using System.Runtime.InteropServices;
 
 namespace OsuHG
 {
-    public class Gamma : IDisposable
+    public class GammaLibrary : IDisposable
     {
-        private WinApi.RAMP? _orginalRamp;
-        private readonly IntPtr createdDC;
+        private static WinApi.RAMP? _orginalRamp;
+        private static IntPtr createdDC;
 
-        public Gamma(string screenDeviceName)
+        public GammaLibrary(string screenDeviceName)
         {
             createdDC = WinApi.CreateDC(null, screenDeviceName, null, IntPtr.Zero);
         }
 
-        public float CurrentGamma { get; private set; } = float.NaN;
+        public static float CurrentGamma { get; private set; } = float.NaN;
 
         public void Dispose()
         {
@@ -22,7 +22,7 @@ namespace OsuHG
                 WinApi.DeleteDC(createdDC);
         }
 
-        public bool Set(float gamma)
+        public static bool Set(float gamma)
         {
             if (_orginalRamp == null && !TrySetDefaultRamp())
                 return false;
@@ -61,7 +61,7 @@ namespace OsuHG
             return restored;
         }
 
-        private bool TrySetDefaultRamp()
+        private static bool TrySetDefaultRamp()
         {
             var ramp = new WinApi.RAMP();
             if (!WinApi.GetDeviceGammaRamp(createdDC, ref ramp))

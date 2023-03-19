@@ -49,6 +49,7 @@
         <Compile Include="ConsoleClearV2.cs" />
         <Compile Include="FindPrograms.cs" />
         <Compile Include="FirstTime.cs" />
+        <Compile Include="Gamma.cs" />
         <Compile Include="GammaLibrary.cs" />
         <Compile Include="MinimizeProgram.cs" />
         <Compile Include="Program.cs" />

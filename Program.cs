@@ -13,13 +13,15 @@ namespace OsuHG
     {
         private static StructuredOsuMemoryReader _sreader;
 
-        public static readonly GeneralData GeneralData = new OsuBaseAddresses().GeneralData;
+        public static OsuBaseAddresses BaseAddresses = new OsuBaseAddresses();
+
+        public static readonly GeneralData GeneralData = BaseAddresses.GeneralData;
         
         public static OsuMemoryStatus _lastStatus;
 
         private static Process osu;
 
-        private static bool Clear = false;
+        public static bool Clear = false;
 
         [STAThread]
         private static void Main(string[] args)
@@ -43,17 +45,21 @@ namespace OsuHG
                         Clear = false;
                     }
 
-                    //Minimize program
+                    // Minimize program
                     if (Settings1.Default.minFeature)
                     {
                         MinimizeProgram.MinimProgram();
                         _lastStatus = GeneralData.OsuStatus;
                         Clear = false;
                     }
+                    
+                    // Gamma Program
+                    if (Settings1.Default.gammaFeature)
+                        GammaProgram.Gamma();
 
                     // Set srReader
                     _sreader = StructuredOsuMemoryReader.Instance.GetInstanceForWindowTitleHint(args.FirstOrDefault());
-                    _sreader.TryRead(GeneralData);
+                    _sreader.TryRead(BaseAddresses);
                 }
 
                 SettingsMenu.Menu();
