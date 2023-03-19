@@ -14,24 +14,36 @@ namespace OsuHG
 
         private static OsuMemoryStatus _lastStatus;
 
-        private static Process exec;
+        private static Process obs32,obs64;
 
         [DllImport("user32.dll")]
         private static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
 
         public static void MinimProgram()
         {
-            exec = Process.GetProcessesByName(Settings1.Default.execName).FirstOrDefault();
-            
-            // Await Program
-            if(exec == null)
-                exec = FindPrograms.FindEXE("Program Executable (" + Settings1.Default.execName + ")", Settings1.Default.execName);
+            // Await OBS
+            if(obs32 == null && obs64 == null)
+                FindPrograms.FindProgram64or32("OBS", "obs64", "obs32");
             ConsoleClearV2.Clear();
+            
+            obs32 = Process.GetProcessesByName("obs32").FirstOrDefault();
+            obs64 = Process.GetProcessesByName("obs64").FirstOrDefault();
 
             // Execute program
-            if (GeneralData.OsuStatus != OsuMemoryStatus.Playing && _lastStatus == OsuMemoryStatus.Playing) ShowWindow(exec.MainWindowHandle, 4);
-            else ShowWindow(exec.MainWindowHandle, 2);
-            _lastStatus = GeneralData.OsuStatus;
+            if (obs32 != null) Ver32bit();
+            else Ver64bit();
+        }
+        // TODO: LAST STATUS
+        private static void Ver32bit()
+        {
+            if (GeneralData.OsuStatus != OsuMemoryStatus.Playing && _lastStatus == OsuMemoryStatus.Playing) ShowWindow(obs32.MainWindowHandle, 4);
+            else ShowWindow(obs32.MainWindowHandle, 2);
+        }
+
+        private static void Ver64bit()
+        {
+            if (GeneralData.OsuStatus != OsuMemoryStatus.Playing && _lastStatus == OsuMemoryStatus.Playing) ShowWindow(obs64.MainWindowHandle, 4);
+            else ShowWindow(obs64.MainWindowHandle, 2);
         }
     }
 }
