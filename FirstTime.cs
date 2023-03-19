@@ -39,18 +39,25 @@ namespace OsuHG
             var z = 0;
             while (!(Console.KeyAvailable && Console.ReadKey(true).Key == ConsoleKey.F8))
             {
-                if (z % 2 != 0)
+                if (z < 10)
                 {
-                    Console.Write(Settings1.Default[AfterF8[z]].ToString());
-                    Console.WriteLine();
-                }
-                else
-                {
-                    Write.WriteString(AfterF8[z]);
+                    if (z % 2 != 0)
+                    {
+                        if (z != 3)
+                        {
+                            Console.Write(Settings1.Default[AfterF8[z]].ToString());
+                            Console.WriteLine();
+                        }
+                        else
+                        {
+                            Console.Write("UNAVAILABLE, ONLY OBS SUPPORTED");
+                            Console.WriteLine();
+                        }
+                    }
+                    else Write.WriteString(AfterF8[z]);
                 }
 
-                z++;
-                if (z == AfterF8.Length - 1)
+                if (z == AfterF8.Length)
                 {
                     Console.WriteLine();
                     for (var i = 5; i > 0; i--)
@@ -65,6 +72,7 @@ namespace OsuHG
                     Settings1.Default.firstTime = false;
                     break;
                 }
+                z++;
             }
 
             if (y)
