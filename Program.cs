@@ -17,6 +17,8 @@ namespace OsuHG
 
         private static Process osu;
 
+        private static bool Clear = false;
+        
         [STAThread]
         private static void Main(string[] args)
         {
@@ -24,7 +26,8 @@ namespace OsuHG
             {
                 while (!(Console.KeyAvailable && Console.ReadKey(true).Key == ConsoleKey.F8))
                 {
-                    ConsoleClearV2.Clear();
+                    if(!Clear) ConsoleClearV2.Clear();
+                    Clear = true;
                     if (Settings1.Default.firstTime) FirstTime.FirstTimeProg();
                     // Timeout => Helps with CPU Usage
                     Thread.Sleep(500);
@@ -32,21 +35,26 @@ namespace OsuHG
                     osu = Process.GetProcessesByName("osu!").FirstOrDefault();
 
                     // Await osu!
-                    if(osu == null)
+                    if (osu == null)
+                    {
                         osu = FindPrograms.FindEXE("osu!", "osu!");
-                    ConsoleClearV2.Clear();
+                        Clear = false;
+                    }
 
                     //Minimize program
                     if (Settings1.Default.minFeature)
+                    {
                         MinimizeProgram.MinimProgram();
+                        Clear = false;
+                    }
 
                     // Set srReader
                     _sreader = StructuredOsuMemoryReader.Instance.GetInstanceForWindowTitleHint(args.FirstOrDefault());
                     _sreader.TryRead(GeneralData);
                 }
 
-                ConsoleClearV2.Clear();
                 SettingsMenu.Menu();
+                Clear = false; 
             }
         }
     }

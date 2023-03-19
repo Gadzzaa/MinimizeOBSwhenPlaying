@@ -24,16 +24,16 @@ namespace OsuHG
             // Await OBS
             if(obs32 == null && obs64 == null)
                 FindPrograms.FindProgram64or32("OBS", "obs64", "obs32");
-            ConsoleClearV2.Clear();
-            
+
             obs32 = Process.GetProcessesByName("obs32").FirstOrDefault();
             obs64 = Process.GetProcessesByName("obs64").FirstOrDefault();
 
             // Execute program
             if (obs32 != null) Ver32bit();
             else Ver64bit();
+
+            _lastStatus = GeneralData.OsuStatus;
         }
-        // TODO: LAST STATUS
         private static void Ver32bit()
         {
             if (GeneralData.OsuStatus != OsuMemoryStatus.Playing && _lastStatus == OsuMemoryStatus.Playing) ShowWindow(obs32.MainWindowHandle, 4);
