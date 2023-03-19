@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using OsuMemoryDataProvider.OsuMemoryModels.Direct;
 
 namespace OsuHG
 {
@@ -21,13 +22,19 @@ namespace OsuHG
             for (var i = 0; i < Settings.Length; i++)
                 if (i % 2 != 0)
                 {
-                    Console.Write(Settings1.Default[Settings[i]].ToString());
-                    Console.WriteLine();
+                    if (i != 3)
+                    {
+                        Console.Write(Settings1.Default[Settings[i]].ToString());
+                        Console.WriteLine();
+                    }
+                    else
+                    {
+                        Console.Write("UNAVAILABLE, ONLY OBS SUPPORTED");
+                        Console.WriteLine();
+                    }
+
                 }
-                else
-                {
-                    Write.WriteString(Settings[i]);
-                }
+                else Write.WriteString(Settings[i]);
 
             Console.WriteLine();
             Write.WriteString("Type '6' for main menu.");
@@ -38,6 +45,7 @@ namespace OsuHG
             x = Int32.Parse(Console.ReadLine());
             int y = 2 * (x - 1);
             ConsoleClearV2.Clear();
+            if(y<10)
             Write.WriteString(Settings[y]);
             switch (y) 
             {
@@ -45,7 +53,6 @@ namespace OsuHG
                     Settings1.Default.minFeature = TrueFalse(Console.ReadLine());
                     break;
                 case 2:
-                    Settings1.Default.execName = Console.ReadLine();
                     break;
                 case 4:
                     Settings1.Default.gammaFeature = TrueFalse(Console.ReadLine());
@@ -57,6 +64,7 @@ namespace OsuHG
                     Settings1.Default.highGamma = int.Parse(Console.ReadLine());
                     break;
                 case 10:
+                    Settings1.Default.Save();
                     break;
                 default:
                     OutOfRange();
@@ -64,15 +72,14 @@ namespace OsuHG
 
             }
             ConsoleClearV2.Clear();
-            Settings1.Default.Save();
+            if(y != 10) Menu();
         }
 
         public static void OutOfRange()
         {
             Write.WriteString("Out of range!");
-            Console.SetCursorPosition(Console.CursorLeft - 13, Console.CursorTop);
-            Console.SetCursorPosition(Console.CursorLeft - 999999999, Console.CursorTop - 1);
             ConsoleClearV2.Clear();
+            Menu();
         }
 
         public static bool TrueFalse(string value)
