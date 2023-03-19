@@ -12,7 +12,7 @@ namespace OsuHG
         {
             while(y == null)
             {
-                Console.WriteLine("Settings unavailable");
+                Console.WriteLine("BE AWARE: Settings unavailable\r\n");
                 Console.Write("Awaiting " + x);
                 for (var i = 0; i < 3; i++)
                 {
@@ -22,11 +22,10 @@ namespace OsuHG
                 }
                 ConsoleClearV2.Clear();
             }
-
+            ConsoleClearV2.Clear();
             return y;
         }
 
-        //TODO: TO BE IMPLEMENTED
         public static void FindProgram64or32(string x, string process64, string process32)
         {
 
@@ -43,6 +42,7 @@ namespace OsuHG
                 }
                 ConsoleClearV2.Clear();
             }
+            ConsoleClearV2.Clear();
         }
     }
 }

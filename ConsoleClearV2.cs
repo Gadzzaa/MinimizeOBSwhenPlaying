@@ -2,7 +2,7 @@
 
 namespace OsuHG
 {
-    public class Watermark
+    public class ConsoleClearV2
     {
         public static void Clear()
         {

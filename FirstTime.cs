@@ -6,7 +6,6 @@ namespace OsuHG
 {
     public class FirstTime
     {
-        public static bool firstTime = false;
 
         public static List<string> BeforeF8 = new List<string>
         {
@@ -24,11 +23,10 @@ namespace OsuHG
             "Highest usable gamma: ", "highGamma"
         };
 
-        private static bool y = true;
+        private static bool set = true;
 
         public static void FirstTimeProg()
         {
-            if (firstTime) return;
             foreach (var x in BeforeF8)
             {
                 Write.WriteString(x);
@@ -67,22 +65,17 @@ namespace OsuHG
                         Thread.Sleep(1000);
                     }
 
-                    ConsoleClearV2.Clear();
-                    y = false;
-                    Settings1.Default.firstTime = false;
+                    set = false;
                     break;
                 }
                 z++;
             }
-
-            if (y)
-            {
-                ConsoleClearV2.Clear();
-                SettingsMenu.Menu();
-                Settings1.Default.firstTime = false;
-            }
-
+            
+            ConsoleClearV2.Clear();
+            Settings1.Default.firstTime = false;
             Settings1.Default.Save();
+            if (set)
+                SettingsMenu.Menu();
         }
     }
 }
