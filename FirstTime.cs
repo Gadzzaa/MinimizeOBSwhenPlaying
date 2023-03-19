@@ -74,6 +74,7 @@ namespace OsuHG
             ConsoleClearV2.Clear();
             Settings1.Default.firstTime = false;
             Settings1.Default.Save();
+            Program.Clear = false;
             if (set)
                 SettingsMenu.Menu();
         }
